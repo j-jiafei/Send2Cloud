@@ -1,6 +1,9 @@
 import cgi
 import urllib2
 import webapp2
+import re
+
+from urlparse import urlparse
 
 from google.appengine.ext import db
 from google.appengine.api import users
@@ -17,9 +20,19 @@ def get_session():
   return session.DropboxSession(APP_KEY, APP_SECRET, ACCESS_TYPE)
 
 def get_client(access_token_key, access_token_secret):
-    sess = get_session()
-    sess.set_token(access_token_key, access_token_secret)
-    return client.DropboxClient(sess)
+  sess = get_session()
+  sess.set_token(access_token_key, access_token_secret)
+  return client.DropboxClient(sess)
+
+def get_file_name(link):
+  headers = link.info().headers
+  for header in headers:
+    m = re.match('^filename=(.*)$', header)
+    if m:
+      return m.group(1)
+  url = link.url
+  return url.split('/')[-1]
+  
 
 class UserToken(db.Model):
   user = db.UserProperty(required=True)
@@ -67,8 +80,10 @@ class Receive(webapp2.RequestHandler):
 
     url = self.request.get('url')
     link = urllib2.urlopen(url)
+    file_name = get_file_name(link)
     db_client = get_client(access_token_key, access_token_secret)
-    result = db_client.put_file('/' + "test_file", link)
+    result = db_client.put_file('/' + file_name, link)
+
 
     dest_path = result['path']
 
@@ -76,10 +91,6 @@ class Receive(webapp2.RequestHandler):
     self.response.out.write(cgi.escape(self.request.get('url')))
     self.response.out.write(dest_path)
     self.response.out.write('</body></html>')
-
-class CallbackHandler(webapp2.RequestHandler):
-  def get(self):
-    user = users.get_current_user()
 
 app = webapp2.WSGIApplication([('/receive', Receive)],
                               debug = True)
