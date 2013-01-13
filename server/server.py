@@ -21,10 +21,6 @@ def get_client(access_token_key, access_token_secret):
     sess.set_token(access_token_key, access_token_secret)
     return client.DropboxClient(sess)
 
-class LocalFile(db.Model):
-  file_name = db.StringProperty(required=True)
-  blob = db.BlobProperty()
-
 class UserToken(db.Model):
   user = db.UserProperty(required=True)
   access_token_key = db.StringProperty()
@@ -39,24 +35,40 @@ class Receive(webapp2.RequestHandler):
       self.redirect(users.create_login_url(self.request.uri))
       return
 
-    sess = get_session()
-
     request_token_key = self.request.get("oauth_token")
-    if not request_token_key:
-      request_token = sess.obtain_request_token()
-      TOKEN_STORE[request_token.key] = request_token
-      self.redirect(sess.build_authorize_url(request_token,
-        oauth_callback=self.request.uri))
-      return
-        
-    request_token = TOKEN_STORE[request_token_key]
-    access_token = sess.obtain_access_token(request_token)
-    TOKEN_STORE[access_token.key] = access_token
-    
+    if request_token_key:
+      sess = get_session()
+
+      request_token = TOKEN_STORE[request_token_key]
+      access_token = sess.obtain_access_token(request_token)
+      TOKEN_STORE[access_token.key] = access_token
+
+      user_token = UserToken(user = user)
+      user_token.access_token_key = access_token.key
+      user_token.access_token_secret = access_token.secret
+      user_token.put()
+      access_token_key = access_token.key
+      access_token_secret = access_token.secret
+    else:
+      user_token_query = db.GqlQuery("SELECT * "
+                                     "FROM UserToken "
+                                     "WHERE user = :1", user);
+      user_token = user_token_query.get()
+      if not user_token:
+        sess = get_session()
+        request_token = sess.obtain_request_token()
+        TOKEN_STORE[request_token.key] = request_token
+        self.redirect(sess.build_authorize_url(request_token,
+          oauth_callback=self.request.uri))
+        return
+      else:
+        access_token_key = user_token.access_token_key
+        access_token_secret = user_token.access_token_secret
+
     url = self.request.get('url')
     link = urllib2.urlopen(url)
-    db = get_client(access_token.key, access_token.secret)
-    result = db.put_file('/' + "test_file", link)
+    db_client = get_client(access_token_key, access_token_secret)
+    result = db_client.put_file('/' + "test_file", link)
 
     dest_path = result['path']
 
