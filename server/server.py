@@ -1,27 +1,73 @@
 import cgi
-import webapp2
 import urllib2
+import webapp2
 
 from google.appengine.ext import db
+from google.appengine.api import users
 
-def getFileType(url):
-  ""
+from dropbox import client, rest, session
+
+APP_KEY = 'nskj5878rk0xdl1'
+APP_SECRET = '512gnvtpyfbu5h0'
+ACCESS_TYPE = 'app_folder'  # should be 'dropbox' or 'app_folder' as configured for your app
+
+TOKEN_STORE = {}
+
+def get_session():
+  return session.DropboxSession(APP_KEY, APP_SECRET, ACCESS_TYPE)
+
+def get_client(access_token_key, access_token_secret):
+    sess = get_session()
+    sess.set_token(access_token_key, access_token_secret)
+    return client.DropboxClient(sess)
 
 class LocalFile(db.Model):
   file_name = db.StringProperty(required=True)
   blob = db.BlobProperty()
 
+class UserToken(db.Model):
+  user = db.UserProperty(required=True)
+  access_token_key = db.StringProperty()
+  access_token_secret = db.StringProperty()
 
 class Receive(webapp2.RequestHandler):
   def get(self):
-    self.response.out.write('<html><body>Link: ')
-    self.response.out.write(cgi.escape(self.request.get('url')))
-    self.response.out.write('</body></html>')
+    user = users.get_current_user()
+
+# login into google account first
+    if not user:
+      self.redirect(users.create_login_url(self.request.uri))
+      return
+
+    sess = get_session()
+
+    request_token_key = self.request.get("oauth_token")
+    if not request_token_key:
+      request_token = sess.obtain_request_token()
+      TOKEN_STORE[request_token.key] = request_token
+      self.redirect(sess.build_authorize_url(request_token,
+        oauth_callback=self.request.uri))
+      return
+        
+    request_token = TOKEN_STORE[request_token_key]
+    access_token = sess.obtain_access_token(request_token)
+    TOKEN_STORE[access_token.key] = access_token
+    
     url = self.request.get('url')
     link = urllib2.urlopen(url)
-    local_file = LocalFile(file_name = 'test_file')
-    local_file.blob = link.read()
-    local_file.put()
+    db = get_client(access_token.key, access_token.secret)
+    result = db.put_file('/' + "test_file", link)
+
+    dest_path = result['path']
+
+    self.response.out.write('<html><body>Link: ')
+    self.response.out.write(cgi.escape(self.request.get('url')))
+    self.response.out.write(dest_path)
+    self.response.out.write('</body></html>')
+
+class CallbackHandler(webapp2.RequestHandler):
+  def get(self):
+    user = users.get_current_user()
 
 app = webapp2.WSGIApplication([('/receive', Receive)],
                               debug = True)
