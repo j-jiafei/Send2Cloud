@@ -1,6 +1,3 @@
-Send2Cloud
-==========
-
 Introduction
 ==================
 Send2Cloud helps you store documents to Dropbox in a fast and convenient way. A
