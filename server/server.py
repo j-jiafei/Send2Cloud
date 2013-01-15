@@ -39,6 +39,10 @@ class UserToken(db.Model):
   access_token_key = db.StringProperty()
   access_token_secret = db.StringProperty()
 
+class IndexHandler(webapp2.RequestHandler):
+  def get(self):
+    self.redirect('http://jeffjia.github.com/Send2Cloud/')
+    return
 
 class ConnectHandler(webapp2.RequestHandler):
   def get(self):
@@ -114,47 +118,31 @@ class SendHandler(webapp2.RequestHandler):
   def get(self):
     user = users.get_current_user()
 
-# login into google account first
     if not user:
       self.redirect(users.create_login_url(self.request.uri))
       return
 
-    request_token_key = self.request.get("oauth_token")
-    if request_token_key:
-      sess = get_session()
+    user_token_query = db.GqlQuery("SELECT * "
+                                   "FROM UserToken "
+                                   "WHERE user = :1", user);
+    user_token = user_token_query.get()
+    if not user_token:
+      self.response.write('<a href=\'connect\'>Connect</a>')
+      return
 
-      request_token = TOKEN_STORE[request_token_key]
-      access_token = sess.obtain_access_token(request_token)
-      TOKEN_STORE[access_token.key] = access_token
-
-      user_token = UserToken(user = user)
-      user_token.access_token_key = access_token.key
-      user_token.access_token_secret = access_token.secret
-      user_token.put()
-      access_token_key = access_token.key
-      access_token_secret = access_token.secret
-    else:
-      user_token_query = db.GqlQuery("SELECT * "
-                                     "FROM UserToken "
-                                     "WHERE user = :1", user);
-      user_token = user_token_query.get()
-      if not user_token:
-        sess = get_session()
-        request_token = sess.obtain_request_token()
-        TOKEN_STORE[request_token.key] = request_token
-        self.redirect(sess.build_authorize_url(request_token,
-          oauth_callback=self.request.uri))
-        return
-      else:
-        access_token_key = user_token.access_token_key
-        access_token_secret = user_token.access_token_secret
+    access_token_key = user_token.access_token_key
+    access_token_secret = user_token.access_token_secret
 
     url = self.request.get('url')
     link = urllib2.urlopen(url)
     file_name = get_file_name(link)
     db_client = get_client(access_token_key, access_token_secret)
-    result = db_client.put_file('/' + file_name, link)
-
+    try:
+      result = db_client.put_file('/' + file_name, link)
+    except rest.ErrorResponse:
+      db.delete(user_token)
+      self.response.write('<a href=\'connect\'>You need to reconnect</a>')
+      return
 
     dest_path = result['path']
 
@@ -163,8 +151,14 @@ class SendHandler(webapp2.RequestHandler):
     self.response.out.write(dest_path)
     self.response.out.write('</body></html>')
 
-app = webapp2.WSGIApplication([('/connect', ConnectHandler),
+class ErrorHandler(webapp2.RequestHandler):
+  def get(self):
+    self.response.write("Page does not exist!")
+
+app = webapp2.WSGIApplication([('/', IndexHandler),
+                               ('/connect', ConnectHandler),
                                ('/connect-res', CallbackHandler),
                                ('/login', LoginHandler),
-                               ('/send', SendHandler)],
+                               ('/send', SendHandler),
+                               ('/.*', ErrorHandler)],
                               debug = True)
