@@ -44,6 +44,11 @@ class IndexHandler(webapp2.RequestHandler):
     self.redirect('http://jeffjia.github.com/Send2Cloud/')
     return
 
+class TryHandler(webapp2.RequestHandler):
+  def get(self):
+    self.response.write('Hello');
+    return
+
 class ConnectHandler(webapp2.RequestHandler):
   def get(self):
     user = users.get_current_user()
@@ -133,7 +138,7 @@ class SendHandler(webapp2.RequestHandler):
     access_token_key = user_token.access_token_key
     access_token_secret = user_token.access_token_secret
 
-    url = self.request.get('url')
+    url = self.request.get('u')
     link = urllib2.urlopen(url)
     file_name = get_file_name(link)
     db_client = get_client(access_token_key, access_token_secret)
@@ -156,6 +161,7 @@ class ErrorHandler(webapp2.RequestHandler):
     self.response.write("Page does not exist!")
 
 app = webapp2.WSGIApplication([('/', IndexHandler),
+                               ('/try', TryHandler),
                                ('/connect', ConnectHandler),
                                ('/connect-res', CallbackHandler),
                                ('/login', LoginHandler),
