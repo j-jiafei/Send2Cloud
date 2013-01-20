@@ -52,11 +52,11 @@ class TryHandler(webapp2.RequestHandler):
 class ConnectHandler(webapp2.RequestHandler):
   def get(self):
     user = users.get_current_user()
-
     if not user:
       self.redirect(users.create_login_url(self.request.uri))
       return
 
+    origin = self.request.get('origin')
     user_token_query = db.GqlQuery("SELECT * "
                                    "FROM UserToken "
                                    "WHERE user = :1", user);
@@ -66,10 +66,14 @@ class ConnectHandler(webapp2.RequestHandler):
       request_token = sess.obtain_request_token()
       TOKEN_STORE[request_token.key] = request_token
       callback = "http://%s/connect-res" % (self.request.host)
+      if origin:
+        callback = callback + '?origin=%s' % (origin)
       self.redirect(sess.build_authorize_url(request_token,
         oauth_callback=callback))
     else:
       self.response.write('You are already connected!')
+      if origin:
+        self.response.write('<a href="%s">Back</a>' % (origin));
 
     return
 
@@ -112,6 +116,9 @@ class CallbackHandler(webapp2.RequestHandler):
         user_token.access_token_secret = access_token.secret
         user_token.put()
         self.response.write('You are connected successfully!')
+        origin = self.request.get('origin')
+        if origin:
+          self.response.write('<a href="%s">Back</a>' % (origin));
 
         return
 
@@ -132,7 +139,7 @@ class SendHandler(webapp2.RequestHandler):
                                    "WHERE user = :1", user);
     user_token = user_token_query.get()
     if not user_token:
-      self.response.write('<a href=\'connect\'>Connect</a>')
+      self.response.write('<a href=\'connect?origin=%s\'>Connect</a>' % (self.request.uri))
       return
 
     access_token_key = user_token.access_token_key
