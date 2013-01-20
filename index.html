@@ -41,6 +41,10 @@
 <li><p>Connect Send2Cloud to Your Dropbox (Google Account Login required) <br><a href="http://send2cloud-server.appspot.com/connect">Connect</a></p></li>
 <li><p>Drag the Bookmarklet to Your Browser Bookmark Bar <br>
 <a href='javascript:(function() {
+  var u = window.location.href;
+  window.open("http://send2cloud-server.appspot.com/send?u=" + encodeURIComponent(u),"Send2Cloud","status=no,directories=no,location=no,width=400,height=210,toolbar=no");
+  })();'>+ Send2Cloud</a></p></li>
+<a href='javascript:(function() {
    var s = document.createElement("script");
    s.setAttribute("id", "send2cloud_js");
    s.setAttribute("type", "text/javascript");
