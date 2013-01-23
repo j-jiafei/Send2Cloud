@@ -11,6 +11,10 @@ handlers:
 - url: /stylesheets
   static_dir: stylesheets
 
+- url: /work
+  script: server.app
+  login: admin
+
 - url: /.*
   script: server.app
 

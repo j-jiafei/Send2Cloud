@@ -7,6 +7,7 @@ from urlparse import urlparse
 
 from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.api import taskqueue
 
 from dropbox import client, rest, session
 
@@ -144,7 +145,17 @@ class SendHandler(webapp2.RequestHandler):
 
     access_token_key = user_token.access_token_key
     access_token_secret = user_token.access_token_secret
+    url = self.request.get('u')
 
+    taskqueue.add(url='/work', params={'u': url, 'access_token_key': access_token_key, 'access_token_secret': access_token_secret})
+
+    self.response.out.write('<html><body>The file is sent')
+    self.response.out.write('</body></html>')
+
+class Worker(webapp2.RequestHandler):
+  def post(self):
+    access_token_key = self.request.get('access_token_key')
+    access_token_secret = self.request.get('access_token_secret')
     url = self.request.get('u')
     link = urllib2.urlopen(url)
     file_name = get_file_name(link)
@@ -153,15 +164,8 @@ class SendHandler(webapp2.RequestHandler):
       result = db_client.put_file('/' + file_name, link)
     except rest.ErrorResponse:
       db.delete(user_token)
-      self.response.write('<a href=\'connect\'>You need to reconnect</a>')
       return
-
-    dest_path = result['path']
-
-    self.response.out.write('<html><body>Link: ')
-    self.response.out.write(cgi.escape(self.request.get('url')))
-    self.response.out.write(dest_path)
-    self.response.out.write('</body></html>')
+    
 
 class ErrorHandler(webapp2.RequestHandler):
   def get(self):
@@ -173,5 +177,6 @@ app = webapp2.WSGIApplication([('/', IndexHandler),
                                ('/connect-res', CallbackHandler),
                                ('/login', LoginHandler),
                                ('/send', SendHandler),
+                               ('/work', Worker),
                                ('/.*', ErrorHandler)],
                               debug = True)
