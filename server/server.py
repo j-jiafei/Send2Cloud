@@ -181,7 +181,6 @@ class Worker(webapp2.RequestHandler):
     try:
       result = db_client.put_file('/' + file_name, link)
     except rest.ErrorResponse:
-      db.delete(user_token)
       return
     
 
