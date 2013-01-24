@@ -11,13 +11,27 @@ from google.appengine.api import taskqueue
 
 from dropbox import client, rest, session
 
-APP_KEY = 'nskj5878rk0xdl1'
-APP_SECRET = '512gnvtpyfbu5h0'
+APP_KEY = ''
+APP_SECRET = ''
 ACCESS_TYPE = 'app_folder'  # should be 'dropbox' or 'app_folder' as configured for your app
+
+APP_STATUS = 0 # 0 for dev, 1 for production
 
 TOKEN_STORE = {}
 
+def check_key_secret():
+  if APP_KEY == '' or APP_SECRET == '':
+    global APP_KEY
+    global APP_SECRET
+    key_secret_query = db.GqlQuery('SELECT * '
+                                   'FROM KeySecret '
+                                   'WHERE status = :1', APP_STATUS)
+    key_secret = key_secret_query.get()
+    APP_KEY = key_secret.app_key
+    APP_SECRET = key_secret.app_secret
+
 def get_session():
+  check_key_secret()
   return session.DropboxSession(APP_KEY, APP_SECRET, ACCESS_TYPE)
 
 def get_client(access_token_key, access_token_secret):
@@ -33,7 +47,11 @@ def get_file_name(link):
       return m.group(1)
   url = link.url
   return url.split('/')[-1]
-  
+
+class KeySecret(db.Model):
+  status = db.IntegerProperty(required=True)
+  app_key = db.StringProperty()
+  app_secret = db.StringProperty()
 
 class UserToken(db.Model):
   user = db.UserProperty(required=True)
@@ -171,6 +189,18 @@ class ErrorHandler(webapp2.RequestHandler):
   def get(self):
     self.response.write("Page does not exist!")
 
+class SetKeySecretHandler(webapp2.RequestHandler):
+  def get(self):
+    status = APP_STATUS
+    app_key = self.request.get('APP_KEY')
+    app_secret = self.request.get('APP_SECRET')
+    key_secret = KeySecret(status = status)
+    key_secret.app_key = app_key
+    key_secret.app_secret = app_secret
+    key_secret.put()
+    self.response.out.write('Key Secret Stored')
+    
+
 app = webapp2.WSGIApplication([('/', IndexHandler),
                                ('/try', TryHandler),
                                ('/connect', ConnectHandler),
@@ -178,5 +208,6 @@ app = webapp2.WSGIApplication([('/', IndexHandler),
                                ('/login', LoginHandler),
                                ('/send', SendHandler),
                                ('/work', Worker),
+                               ('/set_key_secret', SetKeySecretHandler),
                                ('/.*', ErrorHandler)],
                               debug = True)

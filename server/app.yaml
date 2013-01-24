@@ -15,8 +15,13 @@ handlers:
   script: server.app
   login: admin
 
+- url: /set_key_secret
+  script: server.app
+  login: admin
+
 - url: /.*
   script: server.app
+
 
 libraries:
 - name: jinja2
