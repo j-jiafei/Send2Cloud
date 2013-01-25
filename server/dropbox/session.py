@@ -68,7 +68,7 @@ class DropboxSession(object):
         Note that the reuest 'token' is made up of both a token string
         and a secret string.
         """
-        self.token = oauth.OAuthToken(request_token, request_token_secret)
+        self.request_token = oauth.OAuthToken(request_token, request_token_secret)
 
     def build_path(self, target, params=None):
         """Build the path component for an API URL.

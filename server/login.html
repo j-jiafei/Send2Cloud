@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+    <script>
+      var newwindow;
+      function poptastic(url) {
+        newwindow = window.open(url, 'name', 'height=400, width=200');
+        if (window.focus) { newwindow.focus() }
+      }
+    </script>
+    <div class="container">
+      <h1>Send2Cloud</h1>
+      {% if need_to_connect %}
+      <a href="javascript:poptastic('{{ connect_url }}');">{{ connect_linktext }}</a>
+      {% endif %}
+      <a href="javascript:poptastic('{{ url }}');">{{ url_linktext }}</a>
+    </div>
+  </body>
+</html>
