@@ -1,0 +1,28 @@
+application: send2cloud-server
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /static
+  static_dir: static
+
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: /work
+  script: server.app
+  login: admin
+
+- url: /set_key_secret
+  script: server.app
+  login: admin
+
+- url: /.*
+  script: server.app
+
+
+libraries:
+- name: jinja2
+  version: latest

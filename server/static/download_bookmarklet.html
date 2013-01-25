@@ -1,0 +1,17 @@
+<html>
+  <body>
+    <a href='javascript:(function() {
+  var u = window.location.href;
+  window.open("http://localhost:8080/send?u=" + encodeURIComponent(u),"Send2Cloud","status=no,directories=no,location=no,width=400,height=210,toolbar=no");
+})();'>+ Send2Cloud</a>
+    <br />
+    <a href='javascript:(function() {
+      document.body.appendChild(document.createElement("script")).src="http://localhost:8080/static/bookmarklet.js"
+      })();'>Send2Cloud_local</a>
+    <br />
+    <a href='javascript:(function() {
+      document.body.appendChild(document.createElement("script")).src="http://send2cloud-server.appspot.com/static/bookmarklet.js"
+      })();'>Send2Cloud</a>
+  </body>
+</html>
+
