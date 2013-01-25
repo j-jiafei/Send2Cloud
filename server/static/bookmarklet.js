@@ -33,7 +33,7 @@
             <div id='s2cframe'>\
               <div id='s2cframe_veil' style=''>\
               </div>\
-              <iframe src='//localhost:8080/send?u=" + u + "' onload=\"$('#s2cframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
+              <iframe src='//send2cloud-server.appspot.com/send?u=" + u + "' onload=\"$('#s2cframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
               <style type='text/css'>\
                 #s2cframe_veil { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(255,255,255,.25); cursor: pointer; z-index: 900; }\
                 #s2cframe iframe { display: none; position: fixed; top: 10%; left: 30%; width: 40%; height: 30%; z-index: 999; border: 10px solid rgba(0,0,0,.5); margin= -5px 0 0 -5px; }\
