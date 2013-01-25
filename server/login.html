@@ -7,7 +7,7 @@
     <script>
       var newwindow;
       function poptastic(url) {
-        newwindow = window.open(url, 'name', 'height=400, width=200');
+        newwindow = window.open(url, 'name');
         if (window.focus) { newwindow.focus() }
       }
     </script>
@@ -16,7 +16,13 @@
       {% if need_to_connect %}
       <a href="javascript:poptastic('{{ connect_url }}');">{{ connect_linktext }}</a>
       {% endif %}
-      <a href="javascript:poptastic('{{ url }}');">{{ url_linktext }}</a>
+      {% if need_to_login %}
+      <br />
+      <a href="javascript:poptastic('{{ login_url }}');">Sign In</a>
+      {% else %}
+      <br />
+      <a href="{{ logout_url }}">Sign Out</a>
+      {% endif %}
     </div>
   </body>
 </html>
