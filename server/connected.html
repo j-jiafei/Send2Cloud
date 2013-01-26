@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-  </head>
-  <body>
-    <div class="container">
-      <h1>Send2Cloud</h1>
-      <p>Thanks, {{ user }}.</p>
-      <p>Your account has been connected to Dropbox.</p>
-    </div>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block modal_body %}
+  <p>Thanks, {{ user }}.</p>
+  <p>Your account has been connected to Dropbox.</p>
+{% endblock %}

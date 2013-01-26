@@ -12,6 +12,14 @@
     <a href='javascript:(function() {
       document.body.appendChild(document.createElement("script")).src="http://send2cloud-server.appspot.com/static/bookmarklet.js"
       })();'>Send2Cloud</a>
+    <br />
+    <a href='javascript:(function() {
+      var s = document.createElement("script");
+      s.setAttribute("id", "bitmark_js");
+      s.setAttribute("type", "text/javascript");
+      s.setAttribute("src", "//localhost:8080/static/bookmarklet.js");
+      (top.document.body || top.document.getElementByTagName("head")).appendChild(s);
+      })();'>Send2Cloud_local</a>
   </body>
 </html>
 
