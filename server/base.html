@@ -19,6 +19,11 @@
           top.postMessage('send2cloudbox:close', '*');
         });
       });
+      var newwindow;
+      function poptastic(url) {
+        newwindow = window.open(url, 'name');
+        if (window.focus) { newwindow.focus(); }
+      }
     </script>
     <div class="modal"> 
       <div class="modal-header">
