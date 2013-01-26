@@ -13,10 +13,10 @@
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript">
       $(function() {
-        top.postMessage('nyanbox:opened', '*');
+        top.postMessage('send2cloudbox:opened', '*');
         $('.close_w').click(function(event) {
           event.preventDefault();
-          top.postMessage('nyanbox:close', '*');
+          top.postMessage('send2cloudbox:close', '*');
         });
       });
     </script>
