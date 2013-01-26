@@ -21,10 +21,6 @@
           <h1 id="project_title">Send2Cloud</h1>
           <h2 id="project_tagline"></h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/jeffjia/Send2Cloud/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/jeffjia/Send2Cloud/tarball/master">Download this project as a tar.gz file</a>
-            </section>
         </header>
     </div>
 
@@ -33,33 +29,109 @@
       <section id="main_content" class="inner">
         <h1>Introduction</h1>
 
-<p>Send2Cloud helps you store documents to Dropbox in a fast and convenient way. A variety of document types is supported, including pdfs, documents, images, etc, and most mainstream desktop browsers or mobile browsers are supported, such as Safari, IE, Chrome, Firefox.</p>
+        <p>Send2Cloud helps you store documents to Dropbox in a fast and convenient way. A variety of document types
+        is supported, including pdfs, documents, images, etc, and we are aiming to support most mainstream desktop 
+        browsers or mobile browsers.</p>
 
-<h1>How to Use</h1>
+        <h1>How to Use</h1>
+        
+        <ol>
+          <li>
+          <p>Connect Send2Cloud to Your Dropbox (Google Account Login Required)</p>
+          <a href="http://send2cloud-server.appspot.com/connect">Connect</a>
+          </li>
+          <li>
+          <p>Drag the Bookmarklet to Your Browser Bookmark Bar</p>
+          <a href='javascript:(function() {
+            var s = document.createElement("script");
+            s.setAttribute("id", "send2cloud_js");
+            s.setAttribute("type", "text/javascript");
+            s.setAttribute("src", "//send2cloud-server.appspot.com/static/bookmarklet.js");
+            (top.document.body || top.document.getElementByTagName("head")).appendChild(s);
+            })();'>+Send2Cloud</a>
+          <p>If your bookmark bar is hidden, you may need to show it first.</p>
+          </li>
+          <li>
+          <p>Open an Online Document</p>
+          <a href="http://send2cloud-server.appspot.com/static/sample.pdf">A Sample PDF</a>
+          </li>
+          <li><p>Click the Bookmarklet in the Document Tab<br /></p></li>
+        </ol>
 
-<ol>
-<li><p>Connect Send2Cloud to Your Dropbox (Google Account Login required) <br><a href="http://send2cloud-server.appspot.com/connect">Connect</a></p></li>
-<li><p>Drag the Bookmarklet to Your Browser Bookmark Bar <br>
-<a href='javascript:(function() {
-  var s = document.createElement("script");
-  s.setAttribute("id", "send2cloud_js");
-  s.setAttribute("type", "text/javascript");
-  s.setAttribute("src", "//send2cloud-server.appspot.com/static/bookmarklet.js");
-  (top.document.body || top.document.getElementByTagName("head")).appendChild(s);
-  })();'>+Send2Cloud</a></p></li>
-<li><p>Click the Bookmarklet in the Document You Want to Send <br></p></li>
-</ol><h1>Privacy</h1>
+      <h1>How It Works</h1>
+        <ol>
+          <li>
+            <p>Why Google Account Login?</p>
+            <p>Google account login is safe and convenient. You don't need to come up with a new password
+            and let us store it. From Google Account Login, we only get your google user name (email address usually) as an ID, and we will
+            never use it for spam.</p>
+          </li>
+          <li>
+            <p>What is bookmarklet?</p>
+            <p>From Wiki: </p>
+            <blockquote>
+              <p>Simply, a bookmarklet is similar to a bookmark and is saved in the same manner.</p>
+              <p>More technically, a bookmarklet is unobtrusive script written in JavaScript and stored as the URL of a bookmark in a web browser or as a hyperlink on a web page.</p>
+            </blockquote>
+          </li>
+          <li>
+            <p>How is the Online Document Sent?</p>
+            <p>With the bookmarklet, the URL of the document is sent to our server. Our server fetches the document, and forwards it to your Dropbox account.</p>
+            <p>This saves the time and bandwidth compared with users uploading documents to servers, but impose an constraint: the link of the PDF should be static.
+            So documents from authentication needed website (including emails) are unsupported.</p>
+          </li>
+          <li>
+            <p>Can You Access My Documents in Dropbox?</p>
+            <p>Simple answer: absolutely not.</p>
+            <p>More detailed one: When you connect Send2Cloud to Dropbox, we get an app-specific key/secret pair (not your email address and password) from Dropbox, and we use the pair to 
+            access a newly created directory for our app in your Dropbox. We can only access that directory, and we only forward documents to it, and never read it.</p>
+          </li>
+        </ol>
 
-<ol>
-<li><p>All files are sent to our servers and redirected to Dropbox servers in a streaming way, and none of your files are stored in our servers.</p></li>
-<li><p>"Getting Connected" means Send2Cloud only gets the access to the subdirectory of "Send2Cloud" under your Dropbox directory, and only your gmail name and dropbox app-specific infos for Send2Cloud are stored. </p></li>
-<li><p>Your gmail is only used for account authentication, and we will never do spamming.</p></li>
-</ol><h1>License</h1>
+      <h1>Supported Browsers</h1>
+      <table>
+        <tr>
+          <th>OS</th>
+          <th>Browser</th>
+          <th>Status</th>
+        </tr>
+        <tr>
+          <th>Mac OS</th>
+          <th>Safari</th>
+          <th>&#10003</th>
+        </tr>
+        <tr>
+          <th>Mac OS</th>
+          <th>Chrome *</th>
+          <th>&#10003</th>
+        </tr>
+        <tr>
+          <th>Ubuntu</th>
+          <th></th>
+          <th>x</th>
+        </tr>
+        <tr>
+          <th>Other</th>
+          <th>Other</th>
+          <th>?</th>
+        </tr>
+      </table>
+      <p>* In Chrome, bookmarklet is not supported for https page.</p>
 
-<p>Apache license is applied if you want to use the source code.
-<a href="http://www.apache.org/licenses/LICENSE-2.0"> http://www.apache.org/licenses/LICENSE-2.0</a></p>
-      </section>
-    </div>
+      
+      <h1>Privacy</h1>
+        <ol>
+        <li><p>All files are sent to our servers and redirected to Dropbox servers in a streaming way, and none of your files is stored or logged in our servers.</p></li>
+        <li><p>"Getting Connected" means Send2Cloud only gets the access to the subdirectory of "Send2Cloud" in Dropbox, 
+        and only your Google user name and Dropbox app-specific key/secret pair (definitely not your user name and password) for Send2Cloud are stored. </p></li>
+        <li><p>We only get your Google user name (usually your email address) as an ID from Google account login, and we will never do spamming.</p></li>
+      </ol>
+
+      <h1>License</h1>
+        <p>Apache license is applied if you want to use the source code.
+        <a href="http://www.apache.org/licenses/LICENSE-2.0"> http://www.apache.org/licenses/LICENSE-2.0</a></p>
+        </section>
+      </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
