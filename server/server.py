@@ -60,7 +60,10 @@ def get_file_name(link):
     if m:
       return m.group(1)
   url = link.url
-  return url.split('/')[-1]
+  if url.endswith('/'):
+    return url.split('/')[-2]
+  else:
+    return url.split('/')[-1]
 
 class IndexHandler(webapp2.RequestHandler):
   def get(self):
