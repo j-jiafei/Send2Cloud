@@ -89,6 +89,29 @@ class ConnectHandler(webapp2.RequestHandler):
     return
 
 
+class LogoutHandler(webapp2.RequestHandler):
+  """
+  The handler to deal with Dropbox logout request.
+  """
+  def _display_page(self):
+    """
+    Display logout.html
+    """
+    self.response.out.write(
+      jinja_environment.get_template('logout.html').render( {
+        'login_url': '/connect',
+      }))
+    return
+
+  def get(self):
+    """
+    Overwrite app_key, and app_secret
+    """
+    self.response.headers.add_header('Set-Cookie', 'access_key=INVALID')
+    self.response.headers.add_header('Set-Cookie', 'access_secret=INVALID')
+    self._display_page()
+    return
+
 class CallbackHandler(webapp2.RequestHandler):
   """
   The handler to deal with callback request from Dropbox connection
@@ -217,6 +240,7 @@ class ErrorHandler(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([('/', IndexHandler),
                                ('/send', MainHandler),
                                ('/connect', ConnectHandler),
+                               ('/logout', LogoutHandler),
                                ('/connect-res', CallbackHandler),
                                ('/work', Worker),
                                ('/succ', SuccHandler),
