@@ -3,10 +3,8 @@
   {% if succ %}
     <p>You are now connected to Dropbox!</p>
   {% else %}
-    <p>We are sorry that the connection is not successfully.</p>
+    <p>We are sorry that the connection is not successful.</p>
     <br>
     <a href="{{ connect_url }}">Connect again</a>
   {% endif %}
-    <br>
-    <a href="{{ url }}">{{ url_linktext }}</a>
 {% endblock %}

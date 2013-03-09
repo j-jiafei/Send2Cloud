@@ -26,12 +26,12 @@
   iframe.setAttribute("allowTransparency", "true");
   iframe.cssText = iframe.style.cssText = "position: fixed; height: 0; width: 0; top: 0; right: 0; z-index: 999999999;";
   var urlfrag = "/send?u=" + encodeURIComponent(u);
-//  url = "http://send2cloud-server.appspot.com"+urlfrag;
-  url = "http://localhost:8080"+urlfrag;
+  url = "http://send2cloud-server.appspot.com"+urlfrag;
+//  url = "http://localhost:8080"+urlfrag;
   iframe.setAttribute("src", url);
   target_el_body.appendChild(iframe);
-//  var required_origin = "http://send2cloud-server.appspot.com";
-  var required_origin = "http://localhost:8080";
+  var required_origin = "http://send2cloud-server.appspot.com";
+//  var required_origin = "http://localhost:8080";
   var on_msg = function(e) {
     e = e || window.event;
     if (e.origin == required_origin) {

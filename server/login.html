@@ -3,11 +3,4 @@
   {% if need_to_connect %}
     <a href="javascript:poptastic('{{ connect_url }}');">{{ connect_linktext }}</a>
   {% endif %}
-  {% if need_to_login %}
-    <br />
-    <a href="javascript:poptastic('{{ login_url }}');">Sign In</a>
-  {% else %}
-    <br />
-    <a href="{{ logout_url }}">Sign Out</a>
-  {% endif %}
 {% endblock %}
