@@ -31,18 +31,14 @@
 
         <p>Send2Cloud provides a faster and more convenient way to send documents to Dropbox. A variety of document types
         are supported, and you can almost send everything you browsed on the
-        web, pdfs, docs, images, and etc. We are aiming to support most mainstream desktop 
+        web, pdfs, docs, images, and etc. We are aiming to support most mainstream desktop
         browsers or mobile browsers.</p>
 
         <h1>How to Use</h1>
-        
+
         <ol>
           <li>
-          <p>Connect Send2Cloud to Your Dropbox (Google Account Login Required)</p>
-          <a href="http://send2cloud-server.appspot.com/connect">Connect</a>
-          </li>
-          <li>
-          <p>Install the Send2Cloud Bookmarklet</p>
+          <p>Add the Send2Cloud Bookmarklet to Bookmark Bar</p>
           Drag the link <a href='javascript:(function() {
             var s = document.createElement("script");
             s.setAttribute("id", "send2cloud_js");
@@ -62,12 +58,6 @@
       <h1>How It Works</h1>
         <ol>
           <li>
-            <p>Why Google Account Login?</p>
-            <p>Google account login is safe and convenient. You don't need to come up with a new password
-            and let us store it. From Google Account Login, we only get your google user name (email address usually) as an ID, and we will
-            never use it for spam.</p>
-          </li>
-          <li>
             <p>What is bookmarklet?</p>
             <p>From Wiki: </p>
             <blockquote>
@@ -84,7 +74,7 @@
           <li>
             <p>Can You Access My Documents in Dropbox?</p>
             <p>Simple answer: absolutely not.</p>
-            <p>More detailed one: When you connect Send2Cloud to Dropbox, we get an app-specific key/secret pair (not your email address and password) from Dropbox, and we use the pair to 
+            <p>More detailed one: When you connect Send2Cloud to Dropbox, we get an app-specific key/secret pair (not your email address and password) from Dropbox, and we use the pair to
             access a newly created directory for our app in your Dropbox. We can only access that directory, and we only forward documents to it, and never read it.</p>
           </li>
         </ol>
@@ -148,9 +138,7 @@
       <h1>Privacy</h1>
         <ol>
         <li><p>All files are sent to our servers and redirected to Dropbox servers in a streaming way, and none of your files is stored or logged in our servers.</p></li>
-        <li><p>"Getting Connected" means Send2Cloud only gets the access to the subdirectory of "Send2Cloud" in Dropbox, 
-        and only your Google user name and Dropbox app-specific key/secret pair (definitely not your user name and password) for Send2Cloud are stored. </p></li>
-        <li><p>We only get your Google user name (usually your email address) as an ID from Google account login, and we will never do spamming.</p></li>
+        <li><p>"Getting Connected" means Send2Cloud only gets the access to the subdirectory of "Send2Cloud" in Dropbox, and we don't store any of your personal information. </p></li>
       </ol>
 
       <h1>License</h1>
