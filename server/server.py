@@ -66,7 +66,7 @@ def get_file_name(link):
 
 class IndexHandler(webapp2.RequestHandler):
   def get(self):
-    self.redirect('http://jeffjia.github.com/Send2Cloud/')
+    self.redirect('http://jeffjia.github.io/send2cloud/')
     return
 
 
